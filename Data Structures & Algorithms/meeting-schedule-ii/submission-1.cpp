@@ -1,0 +1,38 @@
+/**
+ * Definition of Interval:
+ * class Interval {
+ * public:
+ *     int start, end;
+ *     Interval(int start, int end) {
+ *         this->start = start;
+ *         this->end = end;
+ *     }
+ * }
+ */
+
+class Solution {
+public:
+    int minMeetingRooms(vector<Interval>& intervals) {
+        if(intervals.empty()) return 0;
+        sort(intervals.begin(),intervals.end(),[](const Interval& a,const Interval& b){
+            if(a.start!=b.start) return a.start<b.start;
+            return a.end<b.end;
+        });
+        vector<int> prevEnds;
+        prevEnds.push_back(intervals[0].end);
+        for(int i=1;i<intervals.size();i++){
+            int start=intervals[i].start;
+            int end=intervals[i].end;
+            bool check=false;
+            for(int& prevEnd:prevEnds){
+                if(start>=prevEnd) {
+                    prevEnd=end;
+                    check=true;
+                    break;
+                }
+            }
+            if(!check) prevEnds.push_back(end);
+        }
+        return prevEnds.size();
+    }
+};
